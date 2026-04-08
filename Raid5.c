@@ -1,4 +1,4 @@
-/* Name: 
+/* Name: Aryan Patel and Lucas Veenstra
  * ASSIGNMENT 3
  * ECE 3220 Spring 2026
  * 
