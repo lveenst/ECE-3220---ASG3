@@ -1,7 +1,7 @@
 # makefile for asg3
 
 comp = gcc
-comp_flags = -Wall
+comp_flags = -Wall -g
 
 Raid5 : Raid5.c
 	$(comp) $(comp_flags) Raid5.c -o Raid5 $(comp_libs)
