@@ -71,7 +71,7 @@ int main(int argc, char *argv[]){// need only 3 stripes, so 16 blocks(12 data, 4
     int i = 1;
     
 
-    while (i<48 && scanf("%16c", input) == 1){
+    while (i<=48 && scanf("%16c", input) == 1){
         input[16] = '\0';
         
         printf("%d.[%s]\n", i, input);
