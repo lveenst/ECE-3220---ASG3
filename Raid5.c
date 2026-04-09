@@ -38,8 +38,6 @@ void createRaid5 (char *data, int num_stripes, int disk_num){
                 c = data[i];
                 if (c == 10){
                     c = ' ';
-                } else if (c == 32 && count == 0){
-                    c = data[++i];
                 }
                 diskarray[disk][stripe][block][count] = c;
                 count++;
@@ -65,13 +63,13 @@ void createRaid5 (char *data, int num_stripes, int disk_num){
     }
 
 
-    for (int j = 0; j < 3; j++) {        
-        for (int i = 0; i < 5; i++) {   
-            for (int k = 0; k < 4; k++) { 
-                printf("disk %d, strip %d, block %d: %s\n", i, j, k, diskarray[i][j][k]);
-            }
-        }
-    }
+    // for (int j = 0; j < 3; j++) {        
+    //     for (int i = 0; i < 5; i++) {   
+    //         for (int k = 0; k < 4; k++) { 
+    //             printf("disk %d, strip %d, block %d: %s\n", i, j, k, diskarray[i][j][k]);
+    //         }
+    //     }
+    // }
     return;
 }
 
@@ -88,12 +86,55 @@ void calculateParity ( char * ){
     // return;
 }
 
-void printRaid5Disks(void){
+void printRaid5Disks(char *data){
+    int stripe_count = 0;
+    int strip_count = 0;
+    int block_count = 0;
+    int ii = 0;
+    
     printf("Creating RAID 5 reliable storage system\n");
     printf("**********************************************************************************************************\n");
     printf("[disk0]            [disk1]            [disk2]            [disk3]            [disk4]\n");
-    printf("strip (0, 0)       strip(1, 0)        strip(2, 0)        strip(3, 0)        strip(4, 0)\n");
-    printf("----------------------------------------------------------------------------------------------------------\n");
+    
+    for (block_count; block_count < 3; block_count++)
+    {
+        for (stripe_count; stripe_count < 4; stripe_count++)
+        {
+            if (stripe_count == 0)
+            {
+                printf("strip (0, %d)       strip(1, %d)        strip(2, %d)        strip(3, %d)        strip(4, %d)\n", block_count, block_count, block_count, block_count, block_count);
+                printf("----------------------------------------------------------------------------------------------------------\n");
+            }
+            int strips = 0;
+            for (strip_count; strip_count < 5; strip_count++)
+            {
+                if (strip_count == block_count)
+                {
+                    printf("parity(%d,%d,%d)      ", stripe_count, strip_count, block_count);
+                    strips--;
+                }
+                else 
+                {                    
+                    for (int i = 0; i < 16; i++)
+                    {
+                        if (data[ii] == 10) data[ii] = 32;
+                        printf("%c", data[ii+(strips*48)]);
+                        ii++;
+                    }
+                    printf("      ");
+                }
+                strips++;
+            }
+            printf("\n");
+            strip_count = 0;
+        }
+        strip_count = 0;
+        stripe_count = 0;
+        if (block_count != 2) printf("----------------------------------------------------------------------------------------------------------\n");
+        else printf("**********************************************************************************************************\n");
+    }
+
+    
     return;
 }
 
@@ -122,7 +163,7 @@ int main(int argc, char *argv[]){// need only 3 stripes, so 16 blocks(12 data, 4
     char *data = malloc(769 * sizeof(char));
     scanf("%768c", data);
     createRaid5(data, 3, 5);
-   // printRaid5Disks();
+    printRaid5Disks(data);
 
 //fail code
     simulateFailure(failed_disk);
