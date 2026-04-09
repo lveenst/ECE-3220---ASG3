@@ -10,10 +10,6 @@
  */
 
 
-
-// could hardcode [0,0],[1,1],[2,2]
-
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -149,7 +145,7 @@ void restoreData (void){
     return;
 }
 
-int main(int argc, char *argv[]){// need only 3 stripes, so 16 blocks(12 data, 4 parity)
+int main(int argc, char *argv[]){
     // input validation
     if (argc != 2) {
         printf("Invalid number of arguments, run ./Raid5 with a disk number (0-4).\n");
