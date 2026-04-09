@@ -39,7 +39,7 @@ void createRaid5 (char *data, int num_stripes, int disk_num){
                 if (c == 10){
                     c = ' ';
                 } else if (c == 32 && count == 0){
-                    c = data[i++];
+                    c = data[++i];
                 }
                 diskarray[disk][stripe][block][count] = c;
                 count++;
