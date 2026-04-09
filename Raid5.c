@@ -13,13 +13,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct Raid5Disk{
-    char strip[17];
-    int disk_num; //figure out how to skip the parity strip
-    int strip_num; //figure out how to skip the parity strip
-    struct Raid5Disk *next;
-};
-// paritiy struct? to store parity value????
 void createRaid5 (char *, int, int){
     return;
 }
