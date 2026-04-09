@@ -86,7 +86,10 @@ void calculateParity ( char * ){
     // return;
 }
 
-void printRaid5Disks(char *data){
+void printRaid5Disks(void){
+    char *data = malloc(769 * sizeof(char));
+    scanf("%768c", data);
+    createRaid5(data, 3, 5);
     int stripe_count = 0;
     int strip_count = 0;
     int block_count = 0;
@@ -160,10 +163,7 @@ int main(int argc, char *argv[]){// need only 3 stripes, so 16 blocks(12 data, 4
         return 1;
     }
     // start to read input and save to array
-    char *data = malloc(769 * sizeof(char));
-    scanf("%768c", data);
-    createRaid5(data, 3, 5);
-    printRaid5Disks(data);
+    printRaid5Disks();
 
 //fail code
     simulateFailure(failed_disk);
