@@ -8,7 +8,8 @@
  * 
  * bugs: N/A
  */
-
+int failed_flag = 0;
+int failed_d;
 char diskarray[5][3][4][17];   
 
 #include <stdio.h>
@@ -80,13 +81,13 @@ void printRaid5Disks(void){
     int block_count = 0;
     
     printf("Creating RAID 5 reliable storage system\n");
-    printf("**********************************************************************************************************\n");
-    printf("[disk0]            [disk1]            [disk2]            [disk3]            [disk4]\n");
+    printf("****************************************************************************************************************\n");
+    printf("[disk0]                 [disk1]                [disk2]                [disk3]                [disk4]\n");
     
     for (stripe_count = 0; stripe_count < 3; stripe_count++)
     {
-        printf("strip (0, %d)       strip(1, %d)        strip(2, %d)        strip(3, %d)        strip(4, %d)\n", stripe_count, stripe_count, stripe_count, stripe_count, stripe_count);
-        printf("----------------------------------------------------------------------------------------------------------\n");
+        printf("strip (0, %d)            strip(1, %d)            strip(2, %d)            strip(3, %d)            strip(4, %d)\n", stripe_count, stripe_count, stripe_count, stripe_count, stripe_count);
+        printf("----------------------------------------------------------------------------------------------------------------\n");
         
         for (block_count = 0; block_count < 4; block_count++)
         {
@@ -94,18 +95,26 @@ void printRaid5Disks(void){
             {
                 if (disk_count == stripe_count)
                 {
-                    printf("parity(%d,%d,%d)      ", stripe_count, disk_count, block_count);
+                    if (failed_flag == 1 && failed_d == disk_count) {
+                        printf("%-23s", diskarray[disk_count][stripe_count][block_count]);
+                    } else {
+                        printf("parity(%d,%d,%d)           ", block_count, disk_count, stripe_count);
+                    }
                 }
                 else 
-                {                    
-                    printf("%s      ", diskarray[disk_count][stripe_count][block_count]);
+                {   
+                    if (failed_flag == 1 && failed_d == disk_count) {
+                        printf("%s               ", diskarray[disk_count][stripe_count][block_count]);
+                    } else {
+                        printf("%-23s", diskarray[disk_count][stripe_count][block_count]);
+                    }                 
                 }
             }
             printf("\n");
         }
 
-        if (stripe_count != 2) printf("----------------------------------------------------------------------------------------------------------\n");
-        else printf("**********************************************************************************************************\n");
+        if (stripe_count != 2) printf("----------------------------------------------------------------------------------------------------------------\n");
+        else printf("****************************************************************************************************************\n");
     }
 
     return;
@@ -115,19 +124,16 @@ void simulateFailure (int failed_disk){
     int stripe_count = 0;
     int disk_count = 0;
     int block_count = 0;
-    for (stripe_count = 0; stripe_count < 3; stripe_count++)
-    {
-        for (disk_count = 0; disk_count < 5; disk_count++)
-        {
-            for (block_count = 0; block_count < 4; block_count++)
-            {
-                if (disk_count == failed_disk)
-                {
+    for (stripe_count = 0; stripe_count < 3; stripe_count++) {
+        for (disk_count = 0; disk_count < 5; disk_count++) {
+            for (block_count = 0; block_count < 4; block_count++) {
+                if (disk_count == failed_disk){
                     strcpy(diskarray[disk_count][stripe_count][block_count], "-failed-");
                 }
             }
         }
     }
+    printf("\nDisk %d failed.\n", failed_disk);
     return;
 }
 
@@ -159,9 +165,13 @@ int main(int argc, char *argv[]){
 
 //fail code
     simulateFailure(failed_disk);
+    failed_d = failed_disk;
+    failed_flag = 1;
     printRaid5Disks();
     //restoreData();
-    return 0;
 
     free(data);
+
+    return 0;
+
 }
