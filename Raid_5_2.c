@@ -147,8 +147,12 @@ void simulateFailure (int failed_disk){
 }
 
 void restoreData (void){
-    //should be similar to calculate paritiy just need to find a way to take in the 4 good disk in
+    printf("\n\nRebuilding the data...\n\n\n");
     
+
+
+    failed_flag = 0; //needed for printing reason, dont delete this line
+
     return;
 }
 
@@ -177,8 +181,8 @@ int main(int argc, char *argv[]){
     failed_d = failed_disk;
     failed_flag = 1;
     printRaid5Disks();
-    //restoreData();
-    failed_flag = 0;
+    restoreData();
+    printRaid5Disks();
 
     free(data);
 
