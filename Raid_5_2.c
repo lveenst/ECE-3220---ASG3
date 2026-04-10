@@ -96,7 +96,7 @@ void printRaid5Disks(void){
                 if (disk_count == stripe_count)
                 {
                     if (failed_flag == 1 && failed_d == disk_count) {
-                        printf("%-23s", diskarray[disk_count][stripe_count][block_count]);
+                        printf("-%s-                ", diskarray[disk_count][stripe_count][block_count]);
                     } else {
                         printf("parity(%d,%d,%d)           ", block_count, disk_count, stripe_count);
                     }
@@ -104,7 +104,7 @@ void printRaid5Disks(void){
                 else 
                 {   
                     if (failed_flag == 1 && failed_d == disk_count) {
-                        printf("%s               ", diskarray[disk_count][stripe_count][block_count]);
+                        printf("-%s-               ", diskarray[disk_count][stripe_count][block_count]);
                     } else {
                         printf("%-23s", diskarray[disk_count][stripe_count][block_count]);
                     }                 
@@ -115,6 +115,15 @@ void printRaid5Disks(void){
 
         if (stripe_count != 2) printf("----------------------------------------------------------------------------------------------------------------\n");
         else printf("****************************************************************************************************************\n");
+    }
+    for (stripe_count = 0; stripe_count < 3; stripe_count++){
+        for (block_count = 0; block_count < 4; block_count++){
+            for (disk_count = 0; disk_count < 5; disk_count++){
+                if (disk_count == stripe_count){
+                    printf("parity(%d,%d,%d): %s\n", block_count, disk_count, stripe_count, diskarray[disk_count][stripe_count][block_count]);
+                }
+            }
+        }
     }
 
     return;
@@ -128,7 +137,7 @@ void simulateFailure (int failed_disk){
         for (disk_count = 0; disk_count < 5; disk_count++) {
             for (block_count = 0; block_count < 4; block_count++) {
                 if (disk_count == failed_disk){
-                    strcpy(diskarray[disk_count][stripe_count][block_count], "-failed-");
+                    strcpy(diskarray[disk_count][stripe_count][block_count], "failed");
                 }
             }
         }
@@ -169,6 +178,7 @@ int main(int argc, char *argv[]){
     failed_flag = 1;
     printRaid5Disks();
     //restoreData();
+    failed_flag = 0;
 
     free(data);
 
