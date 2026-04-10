@@ -112,8 +112,22 @@ void printRaid5Disks(void){
 }
 
 void simulateFailure (int failed_disk){
-    // bunch of for loops to go though the 3d array and if the disk number = failed disk, replace it with FAILED DISK
-    //might want to complete calculateparity funcion first
+    int stripe_count = 0;
+    int disk_count = 0;
+    int block_count = 0;
+    for (stripe_count = 0; stripe_count < 3; stripe_count++)
+    {
+        for (disk_count = 0; disk_count < 5; disk_count++)
+        {
+            for (block_count = 0; block_count < 4; block_count++)
+            {
+                if (disk_count == failed_disk)
+                {
+                    strcpy(diskarray[disk_count][stripe_count][block_count], "-failed-");
+                }
+            }
+        }
+    }
     return;
 }
 
@@ -145,7 +159,8 @@ int main(int argc, char *argv[]){
 
 //fail code
     simulateFailure(failed_disk);
-    restoreData();
+    printRaid5Disks();
+    //restoreData();
     return 0;
 
     free(data);
