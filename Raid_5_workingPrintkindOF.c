@@ -147,4 +147,6 @@ int main(int argc, char *argv[]){
     simulateFailure(failed_disk);
     restoreData();
     return 0;
+
+    free(data);
 }
