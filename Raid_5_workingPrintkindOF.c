@@ -76,7 +76,7 @@ void calculateParity (char * ){
     
 void printRaid5Disks(void){
     int stripe_count = 0;
-    int strip_count = 0;
+    int disk_count = 0;
     int block_count = 0;
     
     printf("Creating RAID 5 reliable storage system\n");
@@ -90,15 +90,15 @@ void printRaid5Disks(void){
         
         for (block_count = 0; block_count < 4; block_count++)
         {
-            for (strip_count = 0; strip_count < 5; strip_count++)
+            for (disk_count = 0; disk_count < 5; disk_count++)
             {
-                if (strip_count == stripe_count)
+                if (disk_count == stripe_count)
                 {
-                    printf("parity(%d,%d,%d)      ", stripe_count, strip_count, block_count);
+                    printf("parity(%d,%d,%d)      ", stripe_count, disk_count, block_count);
                 }
                 else 
                 {                    
-                    printf("%s      ", diskarray[strip_count][stripe_count][block_count]);
+                    printf("%s      ", diskarray[disk_count][stripe_count][block_count]);
                 }
             }
             printf("\n");
