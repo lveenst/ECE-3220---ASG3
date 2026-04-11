@@ -130,7 +130,7 @@ void printRaid5Disks(void){
         for (block_count = 0; block_count < 4; block_count++){
             for (disk_count = 0; disk_count < 5; disk_count++){
                 if (disk_count == stripe_count){
-                    printf("parity(%d,%d,%d): ", block_count, disk_count, stripe_count);
+                    printf("parity(%d, %d, %d): ", block_count, disk_count, stripe_count);
                     if (strcmp(diskarray[disk_count][stripe_count][block_count], "failed") == 0) {
                         printf("-%s-", diskarray[disk_count][stripe_count][block_count]);
                     } else {
@@ -198,6 +198,7 @@ int main(void){
 
     FILE *terminal = fopen("/dev/tty", "r");
     printf("Enter disk # to simulate failure: ");
+    fflush(stdout);
     fscanf(terminal, "%d", &failed_disk);
     fclose(terminal);
     if (failed_disk > 4 || failed_disk < 0)
