@@ -62,17 +62,31 @@ void createRaid5 (char *data, int num_stripes, int disk_num){
     return;
 }
 
-void calculateParity (char * ){
-    // char result[17];
-    // char a[17];
-    // char b[17];
-    // char c[17];
-    // char d[17];
-    // for (int i = 0; i < 16; i++) {
-    //     result[i] = a[i] ^ b[i] ^ c[i] ^ d[i];
-    // }
-    // result[16] = '\0';
-    // return;
+void calculateParity(char *data)
+{
+    for (int block = 0; block < 4; block++)
+    {
+        for (int stripe = 0; stripe < 3; stripe++)
+        {
+
+            for (int k = 0; k < 16; k++)
+            {
+                char parity = 0;
+
+                for (int disk = 0; disk < 5; disk++)
+                {
+                    if (disk != block)
+                    {
+                        parity ^= diskarray[disk][block][stripe][k];
+                    }
+                }
+
+                diskarray[block][block][stripe][k] = parity;
+            }
+
+            diskarray[block][block][stripe][16] = '\0';
+        }
+    }
 }
     
 void printRaid5Disks(void){
@@ -175,8 +189,9 @@ int main(int argc, char *argv[]){
     scanf("%768c", data);
     createRaid5(data, 3, 5);
     printRaid5Disks();
+    calculateParity(data);
 
-//fail code
+// fail code
     simulateFailure(failed_disk);
     failed_d = failed_disk;
     failed_flag = 1;
