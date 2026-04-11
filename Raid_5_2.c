@@ -198,7 +198,6 @@ int main(void){
 
     FILE *terminal = fopen("/dev/tty", "r");
     printf("Enter disk # to simulate failure: ");
-    fflush(stdout);
     fscanf(terminal, "%d", &failed_disk);
     fclose(terminal);
     if (failed_disk > 4 || failed_disk < 0)
