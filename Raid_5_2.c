@@ -84,6 +84,14 @@ void calculateParity(char *data)
         }
     }
 }
+
+void print_bits(unsigned char word)
+{
+    for (int i = 7; i >= 0; i--)
+    {
+        printf("%d", (word >> i) & 1);
+    }
+}
     
 void printRaid5Disks(void){
     int stripe_count = 0;
@@ -135,7 +143,7 @@ void printRaid5Disks(void){
                         printf("-%s-", diskarray[disk_count][stripe_count][block_count]);
                     } else {
                         for(int k = 0; k < 16; k++) {
-                            printf("%02X", (unsigned char)diskarray[disk_count][stripe_count][block_count][k]);
+                            print_bits((unsigned char)diskarray[disk_count][stripe_count][block_count][k]);
                         }
                     }
                     printf("\n");
