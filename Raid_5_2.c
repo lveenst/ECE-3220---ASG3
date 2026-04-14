@@ -10,12 +10,18 @@
  */
 int failed_flag = 0;
 int failed_d;
-char diskarray[5][3][4][17];   
+char diskarray[5][3][4][17]; // contains all the data parsed in stripes, strips, and disks  
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
+/*
+This function returns void and takes a char array of all the data we read in from the input file,
+an integer of the number of stripes, and an integer of the number of disks
+The purpose of this function is simply to create/simulate a Raid5 disk storage system and initialize
+the global variable diskarray with all the data we read in.
+*/
 void createRaid5 (char *data, int num_stripes, int disk_num){
     int total_blocks = 0;
     int disk = 0;
@@ -62,8 +68,14 @@ void createRaid5 (char *data, int num_stripes, int disk_num){
     return;
 }
 
+/*
+This function takes the long  string with our input data and returns void
+The purpose of this function is to calculate the parity within the disks so that we can recover data
+if one of the disks failed. The parity is simply calculated from XORing each strip in the same stripe together
+*/
 void calculateParity(char *data)
 {
+    createRaid5(data, 3, 5);
     for (int stripe = 0; stripe < 3; stripe++)
     {
         for (int block = 0; block < 4; block++)
@@ -75,7 +87,7 @@ void calculateParity(char *data)
                 {
                     if (disk != stripe)
                     {
-                        parity ^= diskarray[disk][stripe][block][k];
+                        parity ^= diskarray[disk][stripe][block][k]; // XOR parity within each stripe
                     }
                 }
                 diskarray[stripe][stripe][block][k] = parity;
@@ -85,14 +97,21 @@ void calculateParity(char *data)
     }
 }
 
-void print_bits(unsigned char word)
+/*
+This function takes an 8 bit unsigned char 'data_block' and prints it's value in binary
+*/
+void print_bits(unsigned char data_block)
 {
     for (int i = 7; i >= 0; i--)
     {
-        printf("%d", (word >> i) & 1);
+        printf("%d", (data_block >> i) & 1);
     }
 }
-    
+ 
+/*
+This function has no arguments and no return value, it simply prints the Raid5 disk parsing
+in a formatted a readable way. It also prints the parity values that we calculated earlier.
+*/
 void printRaid5Disks(void){
     int stripe_count = 0;
     int disk_count = 0;
@@ -142,6 +161,7 @@ void printRaid5Disks(void){
                     if (strcmp(diskarray[disk_count][stripe_count][block_count], "failed") == 0) {
                         printf("%s", diskarray[disk_count][stripe_count][block_count]);
                     } else {
+                        // printing each 16 bit chunk one character at time
                         for(int k = 0; k < 16; k++) {
                             print_bits((unsigned char)diskarray[disk_count][stripe_count][block_count][k]);
                         }
@@ -156,6 +176,11 @@ void printRaid5Disks(void){
     return;
 }
 
+/*
+This function takes an integer input 'failed_disk' which was given by the user of the program in the command line
+which indicates the disk # that we want to simulate a failure with
+The simulation is simply setting a block in the array to be the string 'failed' and then printing the disk that failed.
+*/
 void simulateFailure (int failed_disk){
     int stripe_count = 0;
     int disk_count = 0;
@@ -173,6 +198,10 @@ void simulateFailure (int failed_disk){
     return;
 }
 
+/*
+This function has no return value and no arguments, it's purpose is to recover the failed data by reversing the 
+parity by doing the same XOR calculation, with the disks that didn't fail in order to recover the data.
+*/
 void restoreData(void){
     printf("\n\nRebuilding the data...\n\n\n");
     for (int stripe = 0; stripe < 3; stripe++){
@@ -193,29 +222,31 @@ void restoreData(void){
     return;
 }
 
+/*
+Main function, calls all of our helper functions and simulates a Raid5 storage system
+*/
 int main(void){
     int failed_disk;
 
     // start to read input and save to array
     char *data;
     data = malloc(769 * sizeof(char));
-    scanf("%768c", data);
-    createRaid5(data, 3, 5);
-    calculateParity(data);
-    printRaid5Disks();
+    scanf("%768c", data); // getting the input file's data for us to store
+    calculateParity(data); // finding the parity and simulating the Raid5 system
+    printRaid5Disks(); // displaying how it is stored
 
-    FILE *terminal = fopen("/dev/tty", "r");
-    printf("Enter disk # to simulate failure: ");
-    fflush(stdout);
-    fscanf(terminal, "%d", &failed_disk);
-    fclose(terminal);
-    if (failed_disk > 4 || failed_disk < 0)
+    FILE *terminal = fopen("/dev/tty", "r"); // openning a terminal file to read from ("r" argument indicates read)
+    printf("Enter disk # to simulate failure: "); // printing to the same terminal to ask for user input
+    fflush(stdout); // flushing the standard output data stream
+    fscanf(terminal, "%d", &failed_disk); // reading user input for which disk they want to simulate failure
+    fclose(terminal); // closing terminal file we read from
+    if (failed_disk > 4 || failed_disk < 0) // if invalid disk #, error
     {
         printf("ERROR! Enter an integer between 0-4, quitting the program..\n");
         exit(1);
     }
 
-    // fail code
+    // simulating the failed disk and restoring its data
     simulateFailure(failed_disk);
     failed_d = failed_disk;
     failed_flag = 1;
@@ -223,7 +254,7 @@ int main(void){
     restoreData();
     printRaid5Disks();
 
-    free(data);
+    free(data); // freeing allocated memory to ensure no leaks
 
     return 0;
 
