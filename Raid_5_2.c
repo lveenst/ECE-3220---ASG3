@@ -140,7 +140,7 @@ void printRaid5Disks(void){
                 if (disk_count == stripe_count){
                     printf("parity(%d, %d, %d): ", block_count, disk_count, stripe_count);
                     if (strcmp(diskarray[disk_count][stripe_count][block_count], "failed") == 0) {
-                        printf("-%s-", diskarray[disk_count][stripe_count][block_count]);
+                        printf("%s", diskarray[disk_count][stripe_count][block_count]);
                     } else {
                         for(int k = 0; k < 16; k++) {
                             print_bits((unsigned char)diskarray[disk_count][stripe_count][block_count][k]);
